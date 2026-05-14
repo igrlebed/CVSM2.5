@@ -1,0 +1,119 @@
+/* Surface system, motion primitives, and Radix data-state animations.
+   Premium enterprise visual layer — tonal contrast over border-first separation. */
+
+@layer base {
+  body {
+    background:
+      radial-gradient(1200px 600px at 75% -5%, rgba(37, 99, 235, 0.04), transparent 55%),
+      radial-gradient(900px 500px at -8% 105%, rgba(14, 21, 35, 0.025), transparent 55%),
+      var(--background);
+  }
+}
+
+@layer utilities {
+  /* ── Surface tiers ─────────────────────────────────────────────────────── */
+  /* Primary card surface — white, soft shadow, no border by default */
+  .surface {
+    background: var(--card);
+    border-radius: calc(var(--radius) + 2px);
+    box-shadow: var(--shadow-sm);
+  }
+  /* Elevated — stronger shadow, used for floating panels */
+  .surface-elevated {
+    background: var(--card);
+    border-radius: calc(var(--radius) + 4px);
+    box-shadow: var(--shadow-md);
+  }
+  /* Soft — muted tone, recessed area, no shadow */
+  .surface-soft {
+    background: var(--surface);
+    border-radius: calc(var(--radius) + 2px);
+  }
+  /* Island — bento card, slightly raised from the page surface */
+  .island {
+    background: var(--card);
+    border-radius: calc(var(--radius) + 2px);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ── Hairline — use only where border is semantically required ─────────── */
+  .hairline {
+    border: 1px solid var(--border-soft);
+  }
+  .divide-hairline > * + * {
+    border-top: 1px solid var(--border-soft);
+  }
+
+  /* ── Navigation atoms ──────────────────────────────────────────────────── */
+  .nav-pill {
+    transition: background-color 150ms ease, color 150ms ease, transform 120ms ease;
+  }
+  .nav-pill:hover {
+    background: var(--muted);
+  }
+  .nav-pill:active {
+    transform: scale(0.98);
+  }
+
+  /* ── Interactive row ───────────────────────────────────────────────────── */
+  .row-interactive {
+    transition: background-color 120ms ease;
+    cursor: pointer;
+  }
+  .row-interactive:hover {
+    background: var(--muted);
+  }
+}
+
+/* ── Motion system — restrained enterprise, individual CSS properties ──────
+   Using CSS individual transform properties (scale, translate) instead of
+   the shorthand transform avoids conflicts with Tailwind v4 utility classes.  */
+
+@keyframes fm-fade-in   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fm-fade-out  { from { opacity: 1; } to { opacity: 0; } }
+
+/* Modal: centered via inline style position — animate only scale + opacity */
+@keyframes fm-scale-in  { from { opacity: 0; scale: 0.97; } to { opacity: 1; scale: 1; } }
+@keyframes fm-scale-out { from { opacity: 1; scale: 1; }    to { opacity: 0; scale: 0.97; } }
+
+/* Drawer: slide from edge — animate translate + opacity */
+@keyframes fm-slide-right-in  { from { translate: 18px 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+@keyframes fm-slide-right-out { from { translate: 0 0;    opacity: 1; } to { translate: 18px 0; opacity: 0; } }
+@keyframes fm-slide-left-in   { from { translate: -18px 0; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+@keyframes fm-slide-left-out  { from { translate: 0 0;     opacity: 1; } to { translate: -18px 0; opacity: 0; } }
+
+/* Popover: drop from above — scale + tiny translate, no position conflict */
+@keyframes fm-pop-in  { from { opacity: 0; scale: 0.97; translate: 0 -3px; } to { opacity: 1; scale: 1; translate: 0 0; } }
+@keyframes fm-pop-out { from { opacity: 1; scale: 1;    translate: 0 0;    } to { opacity: 0; scale: 0.97; translate: 0 -2px; } }
+
+/* Rise — page/section entrance */
+@keyframes fm-rise { from { opacity: 0; translate: 0 5px; } to { opacity: 1; translate: 0 0; } }
+
+.fm-overlay[data-state='open']        { animation: fm-fade-in 180ms ease-out; }
+.fm-overlay[data-state='closed']      { animation: fm-fade-out 140ms ease-in; }
+.fm-modal[data-state='open']          { animation: fm-scale-in 200ms cubic-bezier(.16,.8,.2,1); }
+.fm-modal[data-state='closed']        { animation: fm-scale-out 150ms ease-in; }
+.fm-drawer-right[data-state='open']   { animation: fm-slide-right-in 230ms cubic-bezier(.16,.8,.2,1); }
+.fm-drawer-right[data-state='closed'] { animation: fm-slide-right-out 170ms ease-in; }
+.fm-drawer-left[data-state='open']    { animation: fm-slide-left-in 230ms cubic-bezier(.16,.8,.2,1); }
+.fm-drawer-left[data-state='closed']  { animation: fm-slide-left-out 170ms ease-in; }
+.fm-popover[data-state='open']        { animation: fm-pop-in 160ms cubic-bezier(.16,.8,.2,1); }
+.fm-popover[data-state='closed']      { animation: fm-pop-out 120ms ease-in; }
+
+.fm-rise { animation: fm-rise 240ms cubic-bezier(.16,.8,.2,1) both; }
+
+/* ── Global interactive transitions ────────────────────────────────────── */
+button, a, [role='tab'] {
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease,
+              box-shadow 150ms ease, transform 120ms ease, opacity 150ms ease;
+}
+
+/* ── Native form controls — force accent color ──────────────────────────── */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
